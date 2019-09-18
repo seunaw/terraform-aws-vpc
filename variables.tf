@@ -52,7 +52,7 @@ variable "elasticache_subnet_ipv6_prefixes" {
   default     = []
 }
 
-variable "intra_subnet_ipv6_prefixes" {
+variable "output_subnet_ipv6_prefixes" {
   description = "Assigns IPv6 intra subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
   type        = list
   default     = []
@@ -94,7 +94,7 @@ variable "elasticache_subnet_assign_ipv6_address_on_creation" {
   default     = null
 }
 
-variable "intra_subnet_assign_ipv6_address_on_creation" {
+variable "output_subnet_assign_ipv6_address_on_creation" {
   description = "Assign IPv6 address on intra subnet, must be disabled to change IPv6 CIDRs. This is the IPv6 equivalent of map_public_ip_on_launch"
   type        = bool
   default     = null
@@ -124,7 +124,7 @@ variable "private_subnet_suffix" {
   default     = "private"
 }
 
-variable "intra_subnet_suffix" {
+variable "output_subnet_suffix" {
   description = "Suffix to append to intra subnets name"
   type        = string
   default     = "intra"
@@ -178,7 +178,7 @@ variable "elasticache_subnets" {
   default     = []
 }
 
-variable "intra_subnets" {
+variable "output_subnets" {
   description = "A list of intra subnets"
   type        = list(string)
   default     = []
@@ -1308,7 +1308,7 @@ variable "elasticache_subnet_tags" {
   default     = {}
 }
 
-variable "intra_subnet_tags" {
+variable "output_subnet_tags" {
   description = "Additional tags for the intra subnets"
   type        = map(string)
   default     = {}
