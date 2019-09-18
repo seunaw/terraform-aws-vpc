@@ -1272,8 +1272,8 @@ variable "elasticache_route_table_tags" {
   default     = {}
 }
 
-variable "intra_route_table_tags" {
-  description = "Additional tags for the intra route tables"
+variable "outbound_route_table_tags" {
+  description = "Additional tags for the outbound route tables"
   type        = map(string)
   default     = {}
 }
@@ -1309,7 +1309,7 @@ variable "elasticache_subnet_tags" {
 }
 
 variable "outbound_subnet_tags" {
-  description = "Additional tags for the intra subnets"
+  description = "Additional tags for the outbound subnets"
   type        = map(string)
   default     = {}
 }
@@ -1326,8 +1326,8 @@ variable "private_acl_tags" {
   default     = {}
 }
 
-variable "intra_acl_tags" {
-  description = "Additional tags for the intra subnets network ACL"
+variable "outbound_acl_tags" {
+  description = "Additional tags for the outbound subnets network ACL"
   type        = map(string)
   default     = {}
 }
@@ -1482,7 +1482,7 @@ variable "private_dedicated_network_acl" {
   default     = false
 }
 
-variable "intra_dedicated_network_acl" {
+variable "outbound_dedicated_network_acl" {
   description = "Whether to use dedicated network ACL (not default) and custom rules for intra subnets"
   type        = bool
   default     = false
@@ -1618,7 +1618,7 @@ variable "private_outbound_acl_rules" {
   ]
 }
 
-variable "intra_inbound_acl_rules" {
+variable "outbound_inbound_acl_rules" {
   description = "Intra subnets inbound network ACLs"
   type        = list(map(string))
 
@@ -1634,7 +1634,7 @@ variable "intra_inbound_acl_rules" {
   ]
 }
 
-variable "intra_outbound_acl_rules" {
+variable "outbound_outbound_acl_rules" {
   description = "Intra subnets outbound network ACLs"
   type        = list(map(string))
 
