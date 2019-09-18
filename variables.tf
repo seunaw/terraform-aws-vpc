@@ -1212,6 +1212,12 @@ variable "propagate_public_route_tables_vgw" {
   default     = false
 }
 
+variable "propagate_outbound_route_tables_vgw" {
+  description = "Should be true if you want route table propagation"
+  type        = bool
+  default     = false
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
