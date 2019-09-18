@@ -178,24 +178,24 @@ output "elasticache_subnets_ipv6_cidr_blocks" {
   value       = aws_subnet.elasticache.*.ipv6_cidr_block
 }
 
-output "intra_subnets" {
-  description = "List of IDs of intra subnets"
-  value       = aws_subnet.intra.*.id
+output "outbound_subnets" {
+  description = "List of IDs of outbound subnets"
+  value       = aws_subnet.outbound.*.id
 }
 
-output "intra_subnet_arns" {
-  description = "List of ARNs of intra subnets"
-  value       = aws_subnet.intra.*.arn
+output "outbound_subnet_arns" {
+  description = "List of ARNs of outbound subnets"
+  value       = aws_subnet.outbound.*.arn
 }
 
-output "intra_subnets_cidr_blocks" {
-  description = "List of cidr_blocks of intra subnets"
-  value       = aws_subnet.intra.*.cidr_block
+output "outbound_subnets_cidr_blocks" {
+  description = "List of cidr_blocks of outbound subnets"
+  value       = aws_subnet.outbound.*.cidr_block
 }
 
-output "intra_subnets_ipv6_cidr_blocks" {
-  description = "List of IPv6 cidr_blocks of intra subnets in an IPv6 enabled VPC"
-  value       = aws_subnet.intra.*.ipv6_cidr_block
+output "outbound_subnets_ipv6_cidr_blocks" {
+  description = "List of IPv6 cidr_blocks of outbound subnets in an IPv6 enabled VPC"
+  value       = aws_subnet.outbound.*.ipv6_cidr_block
 }
 
 output "elasticache_subnet_group" {
@@ -233,9 +233,9 @@ output "elasticache_route_table_ids" {
   value       = length(aws_route_table.elasticache.*.id) > 0 ? aws_route_table.elasticache.*.id : aws_route_table.private.*.id
 }
 
-output "intra_route_table_ids" {
-  description = "List of IDs of intra route tables"
-  value       = aws_route_table.intra.*.id
+output "outbound_route_table_ids" {
+  description = "List of IDs of outbound route tables"
+  value       = aws_route_table.outbound.*.id
 }
 
 output "nat_ids" {
@@ -342,9 +342,9 @@ output "private_network_acl_id" {
   value       = concat(aws_network_acl.private.*.id, [""])[0]
 }
 
-output "intra_network_acl_id" {
-  description = "ID of the intra network ACL"
-  value       = concat(aws_network_acl.intra.*.id, [""])[0]
+output "outbound_network_acl_id" {
+  description = "ID of the outbound network ACL"
+  value       = concat(aws_network_acl.outbound.*.id, [""])[0]
 }
 
 output "database_network_acl_id" {
