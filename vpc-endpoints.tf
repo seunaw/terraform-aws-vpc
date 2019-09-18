@@ -22,11 +22,11 @@ resource "aws_vpc_endpoint_route_table_association" "private_s3" {
   route_table_id  = element(aws_route_table.private.*.id, count.index)
 }
 
-resource "aws_vpc_endpoint_route_table_association" "intra_s3" {
+resource "aws_vpc_endpoint_route_table_association" "outbound_s3" {
   count = var.create_vpc && var.enable_s3_endpoint && length(var.outbound_subnets) > 0 ? 1 : 0
 
   vpc_endpoint_id = aws_vpc_endpoint.s3[0].id
-  route_table_id  = element(aws_route_table.intra.*.id, 0)
+  route_table_id  = element(aws_route_table.outbound.*.id, 0)
 }
 
 resource "aws_vpc_endpoint_route_table_association" "public_s3" {
@@ -60,11 +60,11 @@ resource "aws_vpc_endpoint_route_table_association" "private_dynamodb" {
   route_table_id  = element(aws_route_table.private.*.id, count.index)
 }
 
-resource "aws_vpc_endpoint_route_table_association" "intra_dynamodb" {
+resource "aws_vpc_endpoint_route_table_association" "outbound_dynamodb" {
   count = var.create_vpc && var.enable_dynamodb_endpoint && length(var.outbound_subnets) > 0 ? 1 : 0
 
   vpc_endpoint_id = aws_vpc_endpoint.dynamodb[0].id
-  route_table_id  = element(aws_route_table.intra.*.id, 0)
+  route_table_id  = element(aws_route_table.outbound.*.id, 0)
 }
 
 resource "aws_vpc_endpoint_route_table_association" "public_dynamodb" {
