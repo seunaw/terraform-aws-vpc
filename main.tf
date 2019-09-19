@@ -867,11 +867,11 @@ resource "aws_nat_gateway" "this" {
     local.nat_gateway_ips,
     var.single_nat_gateway ? 0 : count.index,
   )
-  subnet_id = length(aws_subnet.public.*.id) != 0 ? 
-    element(
-      aws_subnet.public.*.id,
-      var.single_nat_gateway ? 0 : count.index
-    ) : 0 
+  subnet_id = length(aws_subnet.public.*.id) != 0 ? 1 : 0
+    # element(
+    #   aws_subnet.public.*.id,
+    #   var.single_nat_gateway ? 0 : count.index
+    # ) : 0 
 
   tags = merge(
     {
