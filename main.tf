@@ -284,8 +284,8 @@ resource "aws_subnet" "public" {
   count = var.create_vpc && length(var.public_subnets) > 0 && (false == var.one_nat_gateway_per_az || length(var.public_subnets) >= length(var.azs)) ? length(var.public_subnets) : 0
 
   vpc_id                          = local.vpc_id
-  #cidr_block                      = element(concat(var.public_subnets, [""]), count.index)
-  cidr_block                      = element(concat(var.public_subnets, [""]), count.index)["cidr"]
+  cidr_block                      = element(concat(var.public_subnets, [""]), count.index)
+ 
   availability_zone               = element(var.azs, count.index)
   map_public_ip_on_launch         = var.map_public_ip_on_launch
   assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.public_subnet_assign_ipv6_address_on_creation
@@ -456,7 +456,8 @@ resource "aws_subnet" "private" {
   count = var.create_vpc && length(var.private_subnets) > 0 ? length(var.private_subnets) : 0
 
   vpc_id                          = local.vpc_id
-  cidr_block                      = var.private_subnets[count.index]
+  #cidr_block                      = var.private_subnets[count.index]
+  cidr_block                      = var.subnet_with_names ? element(concat(var.private_subnets, [""]), count.index)["cidr"] : element(concat(var.private_subnets, [""])
   availability_zone               = element(var.azs, count.index)
   assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
 
