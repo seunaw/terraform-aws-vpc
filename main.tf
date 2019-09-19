@@ -481,7 +481,7 @@ resource "aws_subnet" "private_with_names" {
 
   vpc_id                          = local.vpc_id
   #cidr_block                      = var.private_subnets[count.index]
-  cidr_block                      = element(concat(var.var.private_subnets_with_names, [""]), count.index)["cidr"]
+  cidr_block                      = element(concat(var.private_subnets_with_names, [""]), count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
   assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
 
