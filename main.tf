@@ -867,7 +867,7 @@ resource "aws_nat_gateway" "this" {
     local.nat_gateway_ips,
     var.single_nat_gateway ? 0 : count.index,
   )
-  subnet_id = length(aws_subnet.public.*.id) != 0 ? 1 : 0
+  subnet_id = length(aws_subnet.public.*.id) != 0 ? element(aws_subnet.public.*.id,var.single_nat_gateway) ? 0 : count.index : 0
     # element(
     #   aws_subnet.public.*.id,
     #   var.single_nat_gateway ? 0 : count.index
@@ -891,9 +891,9 @@ resource "aws_nat_gateway" "this" {
 resource "aws_route" "outbound_nat_gateway" {
   count = var.create_vpc && var.enable_nat_gateway ? local.nat_gateway_count : 0
 
-  route_table_id         = element(aws_route_table.outbound.*.id, count.index)
+  route_table_id         = length(aws_subnet.outbound.*.id) != 0 ? element(aws_route_table.outbound.*.id, count.index) : count.index
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.this.*.id, count.index)
+  nat_gateway_id         = length(aws_subnet.outbound.*.id) != 0 ? element(aws_nat_gateway.this.*.id, count.index) : count.index
 
   timeouts {
     create = "5m"
