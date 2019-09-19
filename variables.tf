@@ -1752,3 +1752,10 @@ variable "elasticache_outbound_acl_rules" {
   ]
 }
 
+variable "subnet_with_names" {
+  description = "Indicates that you are passing a subnet with name and cidr"
+  type        = bool
+
+  default     = false
+}
+
