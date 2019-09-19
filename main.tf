@@ -497,7 +497,10 @@ resource "aws_subnet" "private_with_names" {
     },
     var.tags,
     var.private_subnet_tags,
-    { component = element(concat(var.private_subnets_with_names, [""]), count.index)["cidr"] },
+    { 
+      Name = "${var.private.subnet_tags["Name"]}-${element(concat(var.private_subnets_with_names, [""]), count.index)["name"]}" 
+      component = element(concat(var.private_subnets_with_names, [""]), count.index)["name"] 
+    },
   )
 }
 #######################
