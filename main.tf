@@ -453,11 +453,11 @@ resource "aws_elasticache_subnet_group" "elasticache" {
 # private subnets - private subnet without NAT gateway
 #####################################################
 resource "aws_subnet" "private" {
-  count = var.create_vpc && length(var.private_subnets) > 0 ? length(var.private_subnets) : 0
+  count = var.create_vpc && !var.subnet_with_names && length(var.private_subnets) > 0 ? length(var.private_subnets) : 0
 
   vpc_id                          = local.vpc_id
-  #cidr_block                      = var.private_subnets[count.index]
-  cidr_block                      = var.subnet_with_names ? element(concat(var.private_subnets, [""]), count.index)["cidr"] : element(concat(var.private_subnets, [""]),count.index)
+  cidr_block                      = var.private_subnets[count.index]
+
   availability_zone               = element(var.azs, count.index)
   assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
 
@@ -476,6 +476,29 @@ resource "aws_subnet" "private" {
   )
 }
 
+resource "aws_subnet" "private_with_names" {
+  count = var.create_vpc && var.subnet_with_names && length(var.private_subnets_with_names) > 0 ? length(var.private_subnets_with_names) : 0
+
+  vpc_id                          = local.vpc_id
+  #cidr_block                      = var.private_subnets[count.index]
+  cidr_block                      = element(concat(var.private_subnets, [""]), count.index)["cidr"]
+  availability_zone               = element(var.azs, count.index)
+  assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
+
+  ipv6_cidr_block = var.enable_ipv6 && length(var.private_subnet_ipv6_prefixes) > 0 ? cidrsubnet(aws_vpc.this[0].ipv6_cidr_block, 8, var.private_subnet_ipv6_prefixes[count.index]) : null
+
+  tags = merge(
+    {
+      "Name" = format(
+        "%s-${var.private_subnet_suffix}-%s",
+        var.name,
+        element(var.azs, count.index),
+      )
+    },
+    var.tags,
+    var.private_subnet_tags,
+  )
+}
 #######################
 # Default Network ACLs
 #######################

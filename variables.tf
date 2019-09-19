@@ -160,6 +160,12 @@ variable "private_subnets" {
   default     = []
 }
 
+variable "private_subnets_with_names" {
+  description = "A list of private subnets inside the VPC"
+  type        = list(map())
+  default     = []
+}
+
 variable "database_subnets" {
   description = "A list of database subnets"
   type        = list(string)
