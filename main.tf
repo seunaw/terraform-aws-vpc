@@ -469,7 +469,7 @@ resource "aws_subnet" "private" {
         element(var.azs, count.index),
       )
     },
-    var.tags,
+    var.tags["subnet"],
     var.private_subnet_tags,
   )
 }
