@@ -478,7 +478,7 @@ resource "aws_subnet" "private" {
 
 locals {
   # get region name from current az
-  region = substr(element(var.azs, 0))
+  region = substr(element(var.azs, 0),length(element(var.azs, 0))-1)
 
 }
 
