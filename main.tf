@@ -1046,7 +1046,7 @@ resource "aws_nat_gateway" "this" {
   # subnet_id = !var.subnet_with_names ? element(aws_subnet.public.*.id,var.single_nat_gateway ? 0 : count.index) : 
   #   element(aws_subnet.public_with_names.*.id,var.single_nat_gateway ? 0 : count.index)
 
-  subnet_id = !var.subnet_with_names ? 1 : 0
+  subnet_id = !var.subnet_with_names ? element(aws_subnet.public.*.id,var.single_nat_gateway ? 0 : count.index)  : 0
   #element(aws_subnet.public.*.id,var.single_nat_gateway ? 0 : count.index) : 
 
   #element( aws_subnet.public_subnets_with_names.*.id,var.single_nat_gateway ? 0 : count.index) : 0 
