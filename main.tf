@@ -480,7 +480,7 @@ resource "aws_subnet" "private_with_names" {
   count = var.create_vpc && var.subnet_with_names && length(var.private_subnets_with_names) > 0 ? length(var.private_subnets_with_names) : 0
 
   vpc_id                          = local.vpc_id
-  #cidr_block                      = var.private_subnets[count.index]
+
   cidr_block                      = element(concat(var.private_subnets_with_names, [""]), count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
   assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
@@ -497,9 +497,12 @@ resource "aws_subnet" "private_with_names" {
     },
     var.tags,
     var.private_subnet_tags,
+
+    # @TODO - Check if variable were before overwrite
     { 
-      Name = "${var.private_subnet_tags["Name"]}-${element(concat(var.private_subnets_with_names, [""]), count.index)["name"]}",
+      Name      = "${var.private_subnet_tags["Name"]}-${element(concat(var.private_subnets_with_names, [""]), count.index)["name"]}",
       component = element(concat(var.private_subnets_with_names, [""]), count.index)["name"] 
+      tier      = element(concat(var.private_subnets_with_names, [""]), count.index)["tier"] 
     },
   )
 }
