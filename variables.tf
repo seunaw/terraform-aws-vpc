@@ -166,6 +166,12 @@ variable "private_subnets_with_names" {
   default     = [{}]
 }
 
+variable "transit_subnets_with_names" {
+  description = "A list of private subnets inside the VPC"
+  type        = list(map(string))
+  default     = [{}]
+}
+
 variable "database_subnets" {
   description = "A list of database subnets"
   type        = list(string)
@@ -1201,6 +1207,17 @@ variable "vpn_gateway_id" {
   default     = ""
 }
 
+variable "enable_transit_gateway" {
+  description = "Should be true if you want to create a new VPN Gateway resource and attach it to the VPC"
+  type        = bool
+  default     = false
+}
+
+variable "transit_gateway_id" {
+  description = "ID of transit Gateway to attach to the VPC transit network"
+  default     = ""
+}
+
 variable "amazon_side_asn" {
   description = "The Autonomous System Number (ASN) for the Amazon side of the gateway. By default the virtual private gateway is created with the current default Amazon ASN."
   default     = "64512"
@@ -1249,6 +1266,12 @@ variable "public_subnet_tags" {
 }
 
 variable "private_subnet_tags" {
+  description = "Additional tags for the private subnets"
+  type        = map(string)
+  default     = {}
+}
+
+variable "transit_subnet_tags" {
   description = "Additional tags for the private subnets"
   type        = map(string)
   default     = {}

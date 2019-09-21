@@ -516,6 +516,70 @@ resource "aws_subnet" "private_with_names" {
     },
   )
 }
+
+#####################################################
+# Transit subnets
+#####################################################
+resource "aws_subnet" "transit" {
+
+  count = var.create_vpc && !var.subnet_with_names && length(var.transit_subnets_with_names) > 0 ? length(var.transit_subnets_with_names) : 0
+
+  vpc_id                          = local.vpc_id
+
+  cidr_block                      = element(var.transit_subnets, count.index)
+  availability_zone               = element(var.azs, count.index)
+
+  # @TODO - create ipv6 variable, using private for now
+  assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
+
+  ipv6_cidr_block = var.enable_ipv6 && length(var.private_subnet_ipv6_prefixes) > 0 ? cidrsubnet(aws_vpc.this[0].ipv6_cidr_block, 8, var.private_subnet_ipv6_prefixes[count.index]) : null
+
+  tags = merge(
+    {
+      "Name" = format(
+        "%s-${var.transit_subnet_suffix}-%s",
+        var.name,
+        element(var.azs, count.index),
+      )
+    },
+    var.tags,
+    var.transit_subnet_tags,
+  )
+}
+
+resource "aws_subnet" "transit_with_names" {
+  count = var.create_vpc && var.subnet_with_names && length(var.transit_subnets_with_names) > 0 ? length(var.transit_subnets_with_names) : 0
+
+  vpc_id                          = local.vpc_id
+
+  cidr_block                      = element(var.transit_subnets_with_names, count.index)
+  availability_zone               = element(var.azs, count.index)
+
+  # @TODO - create ipv6 variable
+  assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
+
+  ipv6_cidr_block = var.enable_ipv6 && length(var.private_subnet_ipv6_prefixes) > 0 ? cidrsubnet(aws_vpc.this[0].ipv6_cidr_block, 8, var.private_subnet_ipv6_prefixes[count.index]) : null
+
+  tags = merge(
+    {
+      component = element(concat(var.transit_subnets_with_names, [""]), count.index)["name"] 
+      type      = element(concat(var.transit_subnets_with_names, [""]), count.index)["type"] 
+    },
+    var.tags,
+    var.transit_subnet_tags,
+    { 
+      # Replacing region with AZ name
+      Name = format(
+        "%s-%s-%s",
+        replace(var.transit_subnet_tags["Name"],local.region,element(var.azs, count.index)),
+        element(concat(var.transit_subnets_with_names, [""]), count.index)["type"],
+        element(concat(var.transit_subnets_with_names, [""]), count.index)["name"],
+        ),
+      type = "transit"   
+    },
+  )
+}
+
 #######################
 # Default Network ACLs
 #######################
@@ -1069,6 +1133,28 @@ resource "aws_vpn_gateway_route_propagation" "outbound" {
     ),
     count.index,
   )
+}
+
+###########
+# Transit gateway
+###########
+resource "aws_ec2_transit_gateway" "this" {
+  count = var.create_vpc && var.enable_transit_gateway ? 1 : 0
+
+  tags = merge(
+    {
+      "Name" = format("%s", var.name)
+    },
+    var.tags,
+    var.transit_gateway_tags,
+  )
+}
+
+resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
+  subnet_ids         = module.core_team-vpc.private_subnets
+
+  transit_gateway_id = aws_ec2_transit_gateway.core-router.id
+  vpc_id             = module.core_team-vpc.vpc_id
 }
 
 ###########
