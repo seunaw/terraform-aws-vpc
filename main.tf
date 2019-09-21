@@ -502,7 +502,7 @@ resource "aws_subnet" "private_with_names" {
     { 
       Name      = "${var.private_subnet_tags["Name"]}-${element(concat(var.private_subnets_with_names, [""]), count.index)["name"]}",
       component = element(concat(var.private_subnets_with_names, [""]), count.index)["name"] 
-      tier      = element(concat(var.private_subnets_with_names, [""]), count.index)["tier"] 
+      tier      = element(concat(var.private_subnets_with_names, [""]), count.index)["type"] 
     },
   )
 }
