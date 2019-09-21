@@ -1042,16 +1042,9 @@ resource "aws_nat_gateway" "this" {
     local.nat_gateway_ips,
     var.single_nat_gateway ? 0 : count.index,
   )
-  # @Swright
-  # subnet_id = !var.subnet_with_names ? element(aws_subnet.public.*.id,var.single_nat_gateway ? 0 : count.index) : 
-  #   element(aws_subnet.public_with_names.*.id,var.single_nat_gateway ? 0 : count.index)
 
-  subnet_id = !var.subnet_with_names ? element(aws_subnet.public.*.id,var.single_nat_gateway ? 0 : count.index)  : 
-    element(aws_subnet.public_with_names.*.id,var.single_nat_gateway ? 0 : count.index)
-  #element(aws_subnet.public.*.id,var.single_nat_gateway ? 0 : count.index) : 
-
-  #element( aws_subnet.public_subnets_with_names.*.id,var.single_nat_gateway ? 0 : count.index) : 0 
- 
+  # check both subnet and subnet_with_names
+  subnet_id = !var.subnet_with_names ? element(aws_subnet.public.*.id,var.single_nat_gateway ? 0 : count.index)  : element(aws_subnet.public_with_names.*.id,var.single_nat_gateway ? 0 : count.index)
  
   tags = merge(
     {
