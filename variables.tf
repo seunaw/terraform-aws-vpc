@@ -160,6 +160,12 @@ variable "public_subnets" {
   default     = []
 }
 
+variable "public_subnets_with_names" {
+  description = "A list of private subnets inside the VPC"
+  type        = list(map(string))
+  default     = [{}]
+}
+
 variable "private_subnets" {
   description = "A list of private subnets inside the VPC"
   type        = list(string)
@@ -206,6 +212,12 @@ variable "outbound_subnets" {
   description = "A list of intra subnets"
   type        = list(string)
   default     = []
+}
+
+variable "outbound_subnets_with_names" {
+  description = "A list of outbound subnets inside the VPC"
+  type        = list(map(string))
+  default     = [{}]
 }
 
 variable "create_database_subnet_route_table" {
