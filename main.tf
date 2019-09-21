@@ -1151,7 +1151,7 @@ resource "aws_ec2_transit_gateway" "this" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
-  subnet_ids         = aws_subnet.transit_subnet.*.id
+  subnet_ids         = var.subnet_with_names ? aws_subnet.transit_with_names.*.id : aws_subnet.transit.*.id
 
   transit_gateway_id = var.enable_transit_gateway ? aws_ec2_transit_gateway.this[0].id : var.transit_gateway_id
   vpc_id             = local.vpc_id
