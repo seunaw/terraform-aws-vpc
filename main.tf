@@ -510,8 +510,8 @@ resource "aws_subnet" "private_with_names" {
       Name = format(
         "%s-%s-%s",
         replace(var.private_subnet_tags["Name"],local.region,element(var.azs, count.index)),
-        element(concat(var.private_subnets_with_names, [""]), count.index)["type"]
-        element(concat(var.private_subnets_with_names, [""]), count.index)["name"]
+        element(concat(var.private_subnets_with_names, [""]), count.index)["type"],
+        element(concat(var.private_subnets_with_names, [""]), count.index)["name"],
         ),   
     },
   )
