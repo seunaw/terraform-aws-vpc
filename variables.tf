@@ -130,7 +130,7 @@ variable "outbound_subnet_suffix" {
   default     = "outbound"
 }
 
-variable "private_subnet_suffix" {
+variable "transit_subnet_suffix" {
   description = "Suffix to append to transit subnets name"
   type        = string
   default     = "transit"
