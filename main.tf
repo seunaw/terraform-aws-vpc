@@ -281,7 +281,7 @@ resource "aws_route_table" "private" {
 # Public subnet
 ################
 resource "aws_subnet" "public" {
-  count = var.create_vpc && length(var.public_subnets) > 0 && (false == var.one_nat_gateway_per_az || length(var.public_subnets) >= length(var.azs)) ? length(var.public_subnets) : 0
+  count = var.create_vpc  && !var.subnet_with_names && length(var.public_subnets) > 0 && (!var.one_nat_gateway_per_az || length(var.public_subnets) >= length(var.azs)) ? length(var.public_subnets) : 0
 
   vpc_id                          = local.vpc_id
   cidr_block                      = element(concat(var.public_subnets, [""]), count.index)
@@ -305,11 +305,46 @@ resource "aws_subnet" "public" {
   )
 }
 
+resource "aws_subnet" "public_with_names" {
+  count = var.create_vpc && var.subnet_with_names && length(var.public_subnets_with_names) > 0 && (!var.one_nat_gateway_per_az || length(var.public_subnets_with_names) >= length(var.azs)) ? length(var.public_subnets_with_names) : 0
+
+  vpc_id                          = local.vpc_id
+
+  cidr_block                      = element(concat(var.public_subnets_with_names, [""]), count.index)["cidr"]
+  availability_zone               = element(var.azs, count.index)
+  assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.public_subnet_assign_ipv6_address_on_creation
+
+  ipv6_cidr_block = var.enable_ipv6 && length(var.public_subnet_ipv6_prefixes) > 0 ? cidrsubnet(aws_vpc.this[0].ipv6_cidr_block, 8, var.public_subnet_ipv6_prefixes[count.index]) : null
+
+  tags = merge(
+    {
+      # "Name" = format(
+      #   "%s-${var.private_subnet_suffix}-%s",
+      #   var.name,
+      #   element(var.azs, count.index),
+      # )
+      component = element(concat(var.public_subnets_with_names, [""]), count.index)["name"] 
+      type      = element(concat(var.public_subnets_with_names, [""]), count.index)["type"] 
+    },
+    var.tags,
+    var.public_subnet_tags,
+    { 
+      # Replacing region with AZ name
+      Name = format(
+        "%s-%s-%s",
+        replace(var.private_subnet_tags["Name"],local.region,element(var.azs, count.index)),
+        element(concat(var.public_subnets_with_names, [""]), count.index)["type"],
+        element(concat(var.public_subnets_with_names, [""]), count.index)["name"],
+        ),   
+    },
+  )
+}
+
 #################
 # outbound subnet
 #################
 resource "aws_subnet" "outbound" {
-  count = var.create_vpc && length(var.outbound_subnets) > 0 ? length(var.outbound_subnets) : 0
+  count = var.create_vpc && !var.subnet_with_nameslength(var.outbound_subnets) > 0 ? length(var.outbound_subnets) : 0
 
   vpc_id                          = local.vpc_id
   cidr_block                      = var.outbound_subnets[count.index]
@@ -328,6 +363,41 @@ resource "aws_subnet" "outbound" {
     },
     var.tags,
     var.outbound_subnet_tags,
+  )
+}
+
+resource "aws_subnet" "outbound_with_names" {
+  count = var.create_vpc && var.subnet_with_names && length(var.public_subnets_with_names) > 0 && (!var.one_nat_gateway_per_az || length(var.public_subnets_with_names) >= length(var.azs)) ? length(var.public_subnets_with_names) : 0
+
+  vpc_id                          = local.vpc_id
+
+  cidr_block                      = element(concat(var.public_subnets_with_names, [""]), count.index)["cidr"]
+  availability_zone               = element(var.azs, count.index)
+  assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.public_subnet_assign_ipv6_address_on_creation
+
+  ipv6_cidr_block = var.enable_ipv6 && length(var.public_subnet_ipv6_prefixes) > 0 ? cidrsubnet(aws_vpc.this[0].ipv6_cidr_block, 8, var.public_subnet_ipv6_prefixes[count.index]) : null
+
+  tags = merge(
+    {
+      # "Name" = format(
+      #   "%s-${var.private_subnet_suffix}-%s",
+      #   var.name,
+      #   element(var.azs, count.index),
+      # )
+      component = element(concat(var.public_subnets_with_names, [""]), count.index)["name"] 
+      type      = element(concat(var.public_subnets_with_names, [""]), count.index)["type"] 
+    },
+    var.tags,
+    var.public_subnet_tags,
+    { 
+      # Replacing region with AZ name
+      Name = format(
+        "%s-%s-%s",
+        replace(var.private_subnet_tags["Name"],local.region,element(var.azs, count.index)),
+        element(concat(var.public_subnets_with_names, [""]), count.index)["type"],
+        element(concat(var.public_subnets_with_names, [""]), count.index)["name"],
+        ),   
+    },
   )
 }
 
@@ -972,12 +1042,18 @@ resource "aws_nat_gateway" "this" {
     local.nat_gateway_ips,
     var.single_nat_gateway ? 0 : count.index,
   )
-  subnet_id = length(aws_subnet.public.*.id) != 0 ? element(aws_subnet.public.*.id,var.single_nat_gateway) ? 0 : count.index : 0
-    # element(
-    #   aws_subnet.public.*.id,
-    #   var.single_nat_gateway ? 0 : count.index
-    # ) : 0 
-
+  # @Swright
+  subnet_id = !var.subnet_with_names ? 
+    element(
+      aws_subnet.public.*.id,
+      var.single_nat_gateway ? 0 : count.index
+    ) : 
+    element(
+      aws_subnet.public_subnets_with_names.*.id,
+      var.single_nat_gateway ? 0 : count.index
+    ) : 0 
+ 
+ 
   tags = merge(
     {
       "Name" = format(
