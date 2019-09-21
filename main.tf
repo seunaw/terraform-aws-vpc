@@ -522,7 +522,7 @@ resource "aws_subnet" "private_with_names" {
 #####################################################
 resource "aws_subnet" "transit" {
 
-  count = var.create_vpc && !var.subnet_with_names && length(var.transit_subnets_with_names) > 0 ? length(var.transit_subnets_with_names) : 0
+  count = var.create_vpc && !var.subnet_with_names && length(var.transit_subnets) > 0 ? length(var.transit_subnets) : 0
 
   vpc_id                          = local.vpc_id
 
@@ -1146,15 +1146,15 @@ resource "aws_ec2_transit_gateway" "this" {
       "Name" = format("%s", var.name)
     },
     var.tags,
-    var.transit_gateway_tags,
+    var.transit_subnet_tags,
   )
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
   subnet_ids         = module.core_team-vpc.private_subnets
 
-  transit_gateway_id = aws_ec2_transit_gateway.core-router.id
-  vpc_id             = module.core_team-vpc.vpc_id
+  transit_gateway_id = var.enable_transit_gateway ? aws_ec2_transit_gateway.this.id: var.transit_gateway_id
+  vpc_id             = local.vpc_id
 }
 
 ###########

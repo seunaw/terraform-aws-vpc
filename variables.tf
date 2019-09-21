@@ -166,6 +166,12 @@ variable "private_subnets_with_names" {
   default     = [{}]
 }
 
+variable "transit_subnets" {
+  description = "A list of private subnets inside the VPC"
+  type        = list(string)
+  default     = []
+}
+
 variable "transit_subnets_with_names" {
   description = "A list of private subnets inside the VPC"
   type        = list(map(string))
