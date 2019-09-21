@@ -573,7 +573,6 @@ resource "aws_subnet" "transit_with_names" {
         "%s-%s-%s",
         replace(var.transit_subnet_tags["Name"],local.region,element(var.azs, count.index)),
         element(concat(var.transit_subnets_with_names, [""]), count.index)["type"],
-        element(concat(var.transit_subnets_with_names, [""]), count.index)["name"],
         ),
       type = "transit"   
     },
