@@ -552,7 +552,7 @@ resource "aws_subnet" "transit_with_names" {
 
   vpc_id                          = local.vpc_id
 
-  cidr_block                      = element(var.transit_subnets_with_names, count.index)
+  cidr_block                      = element(concat(var.transit_subnets_with_names, [""]), count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
 
   # @TODO - create ipv6 variable
@@ -1151,9 +1151,9 @@ resource "aws_ec2_transit_gateway" "this" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
-  subnet_ids         = module.core_team-vpc.private_subnets
+  subnet_ids         = aws_subnet.transit_subnet.*.id
 
-  transit_gateway_id = var.enable_transit_gateway ? aws_ec2_transit_gateway.this.id: var.transit_gateway_id
+  transit_gateway_id = var.enable_transit_gateway ? aws_ec2_transit_gateway.this[0].id : var.transit_gateway_id
   vpc_id             = local.vpc_id
 }
 

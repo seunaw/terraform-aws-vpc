@@ -127,7 +127,13 @@ variable "private_subnet_suffix" {
 variable "outbound_subnet_suffix" {
   description = "Suffix to append to intra subnets name"
   type        = string
-  default     = "intra"
+  default     = "outbound"
+}
+
+variable "private_subnet_suffix" {
+  description = "Suffix to append to transit subnets name"
+  type        = string
+  default     = "transit"
 }
 
 variable "database_subnet_suffix" {
