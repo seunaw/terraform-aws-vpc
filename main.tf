@@ -344,7 +344,7 @@ resource "aws_subnet" "public_with_names" {
 # outbound subnet
 #################
 resource "aws_subnet" "outbound" {
-  count = var.create_vpc && !var.subnet_with_nameslength(var.outbound_subnets) > 0 ? length(var.outbound_subnets) : 0
+  count = var.create_vpc && !var.subnet_with_names && length(var.outbound_subnets) > 0 ? length(var.outbound_subnets) : 0
 
   vpc_id                          = local.vpc_id
   cidr_block                      = var.outbound_subnets[count.index]
