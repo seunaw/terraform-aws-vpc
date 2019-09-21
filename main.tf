@@ -476,6 +476,12 @@ resource "aws_subnet" "private" {
   )
 }
 
+locals {
+  # get region name from current az
+  region = substr(element(var.azs, 0))
+
+}
+
 resource "aws_subnet" "private_with_names" {
   count = var.create_vpc && var.subnet_with_names && length(var.private_subnets_with_names) > 0 ? length(var.private_subnets_with_names) : 0
 
@@ -489,20 +495,24 @@ resource "aws_subnet" "private_with_names" {
 
   tags = merge(
     {
-      "Name" = format(
-        "%s-${var.private_subnet_suffix}-%s",
-        var.name,
-        element(var.azs, count.index),
-      )
+      # "Name" = format(
+      #   "%s-${var.private_subnet_suffix}-%s",
+      #   var.name,
+      #   element(var.azs, count.index),
+      # )
+      component = element(concat(var.private_subnets_with_names, [""]), count.index)["name"] 
+      type      = element(concat(var.private_subnets_with_names, [""]), count.index)["type"] 
     },
     var.tags,
     var.private_subnet_tags,
-
-    # @TODO - Check if variable were before overwrite
     { 
-      Name      = "${var.private_subnet_tags["Name"]}-${element(concat(var.private_subnets_with_names, [""]), count.index)["name"]}",
-      component = element(concat(var.private_subnets_with_names, [""]), count.index)["name"] 
-      tier      = element(concat(var.private_subnets_with_names, [""]), count.index)["type"] 
+      # Replacing region with AZ name
+      Name = format(
+        "%s-%s-%s",
+        replace(var.private_subnet_tags["Name"],local.region,element(var.azs, count.index)),
+        element(concat(var.private_subnets_with_names, [""]), count.index)["type"]
+        element(concat(var.private_subnets_with_names, [""]), count.index)["name"]
+        ),   
     },
   )
 }
