@@ -374,7 +374,7 @@ resource "aws_subnet" "outbound_with_names" {
 
   vpc_id                          = local.vpc_id
 
-  cidr_block                      = element(concat(var.public_subnets_with_names, [""]), count.index)["cidr"]
+  cidr_block                      = element(var.public_subnets_with_names, count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
   assign_ipv6_address_on_creation = var.outbound_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.outbound_subnet_assign_ipv6_address_on_creation
 
@@ -388,7 +388,7 @@ resource "aws_subnet" "outbound_with_names" {
       #   element(var.azs, count.index),
       # )
       component = element(var.outbound_subnets_with_names, count.index)["name"] 
-      type      = element(concat(var.outbound_subnets_with_names, [""]), count.index)["type"] 
+      type      = element(var.outbound_subnets_with_names, count.index)["type"] 
     },
     var.tags,
     var.public_subnet_tags,
@@ -397,8 +397,8 @@ resource "aws_subnet" "outbound_with_names" {
       Name = format(
         "%s-%s-%s",
         replace(var.outbound_subnet_tags["Name"],local.region,element(var.azs, count.index)),
-        element(concat(var.outbound_subnets_with_names, [""]), count.index)["type"],
-        element(concat(var.outbound_subnets_with_names, [""]), count.index)["name"],
+        element(var.outbound_subnets_with_names, count.index)["type"],
+        element(var.outbound_subnets_with_names, count.index)["name"],
         ),   
     },
   )
