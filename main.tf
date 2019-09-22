@@ -387,7 +387,7 @@ resource "aws_subnet" "outbound_with_names" {
       #   var.name,
       #   element(var.azs, count.index),
       # )
-      component = element(concat(var.outbound_subnets_with_names, [""]), count.index)["name"] 
+      component = element(var.outbound_subnets_with_names, count.index)["name"] 
       type      = element(concat(var.outbound_subnets_with_names, [""]), count.index)["type"] 
     },
     var.tags,
