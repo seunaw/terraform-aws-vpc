@@ -1047,7 +1047,7 @@ resource "aws_nat_gateway" "this" {
   )
 
   # check both subnet and subnet_with_names
-  subnet_id = !var.subnet_with_names ? element(aws_subnet.public.*.id,var.single_nat_gateway ? 0 : count.index)  : element(aws_subnet.public_with_names.*.id,var.single_nat_gateway ? 0 : count.index)
+  subnet_id = !var.subnet_with_names ? element(aws_subnet.outbound.*.id,var.single_nat_gateway ? 0 : count.index)  : element(aws_subnet.outbound_with_names.*.id,var.single_nat_gateway ? 0 : count.index)
  
   tags = merge(
     {
