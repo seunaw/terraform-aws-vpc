@@ -370,11 +370,11 @@ resource "aws_subnet" "outbound" {
 
 resource "aws_subnet" "outbound_with_names" {
   # count = var.create_vpc && var.subnet_with_names && length(var.public_subnets_with_names) > 0 && (!var.one_nat_gateway_per_az || length(var.public_subnets_with_names) >= length(var.azs)) ? length(var.public_subnets_with_names) : 0
-  count = var.create_vpc && var.subnet_with_names && length(var.public_subnets_with_names) > 0 ? length(var.public_subnets_with_names) : 0
+  count = var.create_vpc && var.subnet_with_names && length(var.outbound_subnets_with_names) > 0 ? length(var.outbound_subnets_with_names) : 0
 
   vpc_id                          = local.vpc_id
 
-  cidr_block                      = element(var.public_subnets_with_names, count.index)["cidr"]
+  cidr_block                      = element(var.outbound_subnets_with_names, count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
   assign_ipv6_address_on_creation = var.outbound_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.outbound_subnet_assign_ipv6_address_on_creation
 
@@ -391,7 +391,7 @@ resource "aws_subnet" "outbound_with_names" {
       type      = element(var.outbound_subnets_with_names, count.index)["type"] 
     },
     var.tags,
-    var.public_subnet_tags,
+    var.outbound_subnet_tags,
     { 
       # Replacing region with AZ name
       Name = format(
