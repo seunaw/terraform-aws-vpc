@@ -560,7 +560,7 @@ resource "aws_subnet" "private_with_names" {
 
   vpc_id                          = local.vpc_id
 
-  cidr_block                      = element(concat(var.private_subnets_with_names, [{}]), count.index)["cidr"]
+  cidr_block                      = element(concat(var.private_subnets_with_names, []), count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
   assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
 
@@ -625,7 +625,7 @@ resource "aws_subnet" "transit_with_names" {
 
   vpc_id                          = local.vpc_id
 
-  cidr_block                      = element(concat(var.transit_subnets_with_names, [""]), count.index)["cidr"]
+  cidr_block                      = element(concat(var.transit_subnets_with_names, []), count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
 
   # @TODO - create ipv6 variable
@@ -635,8 +635,8 @@ resource "aws_subnet" "transit_with_names" {
 
   tags = merge(
     {
-      component = element(concat(var.transit_subnets_with_names, [""]), count.index)["name"] 
-      type      = element(concat(var.transit_subnets_with_names, [""]), count.index)["type"] 
+      component = element(concat(var.transit_subnets_with_names, []), count.index)["name"] 
+      type      = element(concat(var.transit_subnets_with_names, []), count.index)["type"] 
     },
     var.tags,
     var.transit_subnet_tags,

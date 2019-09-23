@@ -162,7 +162,7 @@ variable "public_subnets" {
 
 variable "public_subnets_with_names" {
   description = "A list of private subnets inside the VPC"
-  type        = list(map(string))
+  #type        = list(map(string))
   default     = [{}]
 }
 
@@ -175,7 +175,7 @@ variable "private_subnets" {
 variable "private_subnets_with_names" {
   description = "A list of private subnets inside the VPC"
   #type        = list()
-  default     = []
+  default     = [{}]
 }
 
 variable "transit_subnets" {
@@ -186,7 +186,7 @@ variable "transit_subnets" {
 
 variable "transit_subnets_with_names" {
   description = "A list of private subnets inside the VPC"
-  type        = list(map(string))
+  #type        = list(map(string))
   default     = [{}]
 }
 
@@ -216,7 +216,7 @@ variable "outbound_subnets" {
 
 variable "outbound_subnets_with_names" {
   description = "A list of outbound subnets inside the VPC"
-  type        = list(map(string))
+  #type        = list(map(string))
   default     = [{}]
 }
 
