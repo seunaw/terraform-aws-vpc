@@ -1,6 +1,7 @@
 locals {
   max_subnet_length = max(
     length(var.outbound_subnets),
+    length(var.outbound_subnets_with_names),
     length(var.elasticache_subnets),
     length(var.database_subnets),
     length(var.redshift_subnets),
