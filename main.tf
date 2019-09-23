@@ -560,7 +560,7 @@ resource "aws_subnet" "private_with_names" {
 
   vpc_id                          = local.vpc_id
 
-  cidr_block                      = element(concat(var.private_subnets_with_names, []), count.index)["cidr"]
+  cidr_block                      = element(concat(var.private_subnets_with_names, [""]), count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
   assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
 
@@ -573,8 +573,8 @@ resource "aws_subnet" "private_with_names" {
       #   var.name,
       #   element(var.azs, count.index),
       # )
-      component = element(concat(var.private_subnets_with_names, [{}]), count.index)["name"] 
-      type      = element(concat(var.private_subnets_with_names, [{}]), count.index)["type"] 
+      component = element(concat(var.private_subnets_with_names, [""]), count.index)["name"] 
+      type      = element(concat(var.private_subnets_with_names, [""]), count.index)["type"] 
     },
     var.tags,
     var.private_subnet_tags,
@@ -583,8 +583,8 @@ resource "aws_subnet" "private_with_names" {
       Name = format(
         "%s-%s-%s",
         replace(var.private_subnet_tags["Name"],local.region,element(var.azs, count.index)),
-        element(concat(var.private_subnets_with_names, [{}]), count.index)["type"],
-        element(concat(var.private_subnets_with_names, [{}]), count.index)["name"],
+        element(concat(var.private_subnets_with_names, [""]), count.index)["type"],
+        element(concat(var.private_subnets_with_names, [""]), count.index)["name"],
         ),   
     },
   )
