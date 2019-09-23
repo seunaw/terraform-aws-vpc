@@ -1048,7 +1048,7 @@ resource "aws_nat_gateway" "this" {
   )
 
   # check both subnet and subnet_with_names
-  subnet_id = !var.subnet_with_names ? element(aws_subnet.outbound.*.id,var.single_nat_gateway ? 0 : count.index)  : element(aws_subnet.outbound_with_names.*.id,var.single_nat_gateway ? 0 : count.index)
+  subnet_id = !var.subnet_with_names ? element(aws_subnet.outbound.*.id, var.single_nat_gateway ? 0 : count.index)  : element(aws_subnet.outbound_with_names.*.id, var.single_nat_gateway ? 0 : count.index)
  
   tags = merge(
     {
@@ -1070,7 +1070,7 @@ resource "aws_route" "outbound_nat_gateway" {
 
   route_table_id         = length(aws_subnet.outbound.*.id) != 0  || length(aws_subnet.outbound_with_names.*.id) != 0  ? element(aws_route_table.outbound.*.id, count.index) : count.index
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = length(aws_subnet.outbound.*.id) != 0 ? element(aws_nat_gateway.this.*.id, count.index) : count.index
+  nat_gateway_id         = length(aws_subnet.outbound.*.id) != 0 || length(aws_subnet.outbound_with_names.*.id) != 0 ? element(aws_nat_gateway.this.*.id, count.index) : count.index
 
   timeouts {
     create = "5m"
