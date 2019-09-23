@@ -163,11 +163,11 @@ resource "aws_route_table" "outbound" {
         element(var.azs, count.index),
       )
     },
-    var.tags,
-    {
-      Name = lookup(var.tags, "Name", "") != "" ? var.single_nat_gateway ? format("%s-%s", var.tags["Name"], var.outbound_subnet_suffix) : format("%s-%s-%s", var.tags["Name"], var.outbound_subnet_suffix,element(var.azs, count.index)) : ""
-    },
-    var.outbound_route_table_tags,
+    # var.tags,
+    # {
+    #   Name = lookup(var.tags, "Name", "") != "" ? var.single_nat_gateway ? format("%s-%s", var.tags["Name"], var.outbound_subnet_suffix) : format("%s-%s-%s", var.tags["Name"], var.outbound_subnet_suffix,element(var.azs, count.index)) : ""
+    # },
+    # var.outbound_route_table_tags,
   )
 
   lifecycle {
