@@ -164,7 +164,13 @@ resource "aws_route_table" "outbound" {
       )
     },
     var.tags,
+    {
+      Name = lookup(var.tags, "Name", format("%s-%s", var.tags["Name"], var.outbound_subnet_suffix))
+    },
     var.outbound_route_table_tags,
+    {
+      Name = lookup(var.outbound_route_table_tags, "Name", format("%s-%s", var.tags["Name"], var.outbound_subnet_suffix))
+    },
   )
 
   lifecycle {
