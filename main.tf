@@ -741,6 +741,9 @@ resource "aws_network_acl" "public" {
       "Name" = format("%s-${var.public_subnet_suffix}", var.name)
     },
     var.tags,
+    {
+      Name = format("%s-%s", var.tags["Name"], var.public_subnet_suffix)
+    },
     var.public_acl_tags,
   )
 }
