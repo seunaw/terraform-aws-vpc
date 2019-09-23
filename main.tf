@@ -731,10 +731,10 @@ resource "aws_default_network_acl" "this" {
 # Public Network ACLs
 ########################
 resource "aws_network_acl" "public" {
-  count = var.create_vpc && var.public_dedicated_network_acl && length(var.public_subnets) > 0 ? 1 : 0
+  count = var.create_vpc && var.public_dedicated_network_acl && (length(var.public_subnets) > 0  || length(var.public_subnets_with_names) > 0 ) ? 1 : 0
 
   vpc_id     = element(concat(aws_vpc.this.*.id, [""]), 0)
-  subnet_ids = aws_subnet.public.*.id
+  subnet_ids = !var.subnet_with_names ? aws_subnet.public.*.id : aws_subnet.public_subnets_with_names.*.id
 
   tags = merge(
     {
@@ -746,7 +746,7 @@ resource "aws_network_acl" "public" {
 }
 
 resource "aws_network_acl_rule" "public_inbound" {
-  count = var.create_vpc && var.public_dedicated_network_acl && length(var.public_subnets) > 0 ? length(var.public_inbound_acl_rules) : 0
+  count = var.create_vpc && var.public_dedicated_network_acl && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 ) ? length(var.public_inbound_acl_rules) : 0
 
   network_acl_id = aws_network_acl.public[0].id
 
@@ -762,7 +762,7 @@ resource "aws_network_acl_rule" "public_inbound" {
 }
 
 resource "aws_network_acl_rule" "public_outbound" {
-  count = var.create_vpc && var.public_dedicated_network_acl && length(var.public_subnets) > 0 ? length(var.public_outbound_acl_rules) : 0
+  count = var.create_vpc && var.public_dedicated_network_acl && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 ) ? length(var.public_outbound_acl_rules) : 0
 
   network_acl_id = aws_network_acl.public[0].id
 
