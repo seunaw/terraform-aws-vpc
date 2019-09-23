@@ -1221,11 +1221,14 @@ resource "aws_ec2_transit_gateway" "this" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
-  subnet_ids         = var.subnet_with_names ? aws_subnet.transit_with_names.*.id : aws_subnet.transit.*.id
+  count               = length(var.transit_subnets_with_names) > 0 || length(var.transit_subnets) > 0 ? 1 : 0 
 
-  transit_gateway_id = var.enable_transit_gateway ? aws_ec2_transit_gateway.this[0].id : var.transit_gateway_id
-  vpc_id             = local.vpc_id
+  subnet_ids          = length(var.transit_subnets) > 0 ? aws_subnet.transit.*.id : aws_subnet.transit_with_names.*.id
+
+  transit_gateway_id  = var.enable_transit_gateway ? aws_ec2_transit_gateway.this[0].id : var.transit_gateway_id
+  vpc_id              = local.vpc_id
 }
+
 
 ###########
 # Defaults
