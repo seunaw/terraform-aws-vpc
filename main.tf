@@ -112,7 +112,7 @@ resource "aws_egress_only_internet_gateway" "this" {
 # Publiс routes
 ################
 resource "aws_route_table" "public" {
-  count = var.create_vpc && length(var.public_subnets) > 0 ? 1 : 0
+  count = var.create_vpc && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 )? 1 : 0
 
   vpc_id = local.vpc_id
 
