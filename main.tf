@@ -264,7 +264,7 @@ resource "aws_route_table" "elasticache" {
 # private routes
 #################
 resource "aws_route_table" "private" {
-  count = var.create_vpc && length(var.private_subnets) > 0 ? 1 : 0
+  count = var.create_vpc && (length(var.private_subnets) > 0 || length(var.private_subnets_with_names) > 0) ? 1 : 0
 
   vpc_id = local.vpc_id
 
