@@ -734,7 +734,7 @@ resource "aws_network_acl" "public" {
   count = var.create_vpc && var.public_dedicated_network_acl && (length(var.public_subnets) > 0  || length(var.public_subnets_with_names) > 0 ) ? 1 : 0
 
   vpc_id     = element(concat(aws_vpc.this.*.id, [""]), 0)
-  subnet_ids = !var.subnet_with_names ? aws_subnet.public.*.id : aws_subnet.public_subnets_with_names.*.id
+  subnet_ids = !var.subnet_with_names ? aws_subnet.public.*.id : aws_subnet.public_with_names.*.id
 
   tags = merge(
     {
