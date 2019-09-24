@@ -1520,7 +1520,7 @@ variable "manage_default_network_acl" {
 variable "default_network_acl_name" {
   description = "Name to be used on the Default Network ACL"
   type        = string
-  default     = ""
+  default     = "Default Network ACL"
 }
 
 variable "default_network_acl_tags" {
