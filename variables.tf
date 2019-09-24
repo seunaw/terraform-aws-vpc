@@ -1538,7 +1538,7 @@ variable "public_dedicated_network_acl" {
 variable "private_dedicated_network_acl" {
   description = "Whether to use dedicated network ACL (not default) and custom rules for private subnets"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "outbound_dedicated_network_acl" {

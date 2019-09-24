@@ -742,7 +742,8 @@ resource "aws_network_acl" "public" {
     },
     var.tags,
     {
-      Name = format("%s-%s", var.tags["Name"], var.public_subnet_suffix)
+      Name        = format("%s-%s", var.tags["Name"], var.public_subnet_suffix)
+      subnet_type = "public"
     },
     var.public_acl_tags,
   )
@@ -795,7 +796,8 @@ resource "aws_network_acl" "outbound" {
     },
     var.tags,
     {
-      Name = format("%s-%s", var.tags["Name"], var.outbound_subnet_suffix)
+      Name        = format("%s-%s", var.tags["Name"], var.outbound_subnet_suffix)
+      subnet_type = "outbound"
     },
     var.outbound_acl_tags,
   )
@@ -837,16 +839,20 @@ resource "aws_network_acl_rule" "outbound_outbound" {
 # private Network ACLs
 ########################
 resource "aws_network_acl" "private" {
-  count = var.create_vpc && var.private_dedicated_network_acl && length(var.private_subnets) > 0 ? 1 : 0
+  count = var.create_vpc && var.private_dedicated_network_acl && (length(var.private_subnets) > 0 || length(var.private_subnets_with_names) > 0 ) ? 1 : 0
 
   vpc_id     = element(concat(aws_vpc.this.*.id, [""]), 0)
-  subnet_ids = aws_subnet.private.*.id
+  subnet_ids = !var.subnet_with_names ? aws_subnet.private.*.id : aws_subnet.private_with_names.*.id
 
   tags = merge(
     {
       "Name" = format("%s-${var.private_subnet_suffix}", var.name)
     },
     var.tags,
+    {
+      Name        = format("%s-%s", var.tags["Name"], var.private_subnet_suffix)
+      subnet_type = "private"
+    },
     var.private_acl_tags,
   )
 }
