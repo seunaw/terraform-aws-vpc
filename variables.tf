@@ -1526,9 +1526,7 @@ variable "default_network_acl_name" {
 variable "default_network_acl_tags" {
   description = "Additional tags for the Default Network ACL"
   type        = map(string)
-  default     = { 
-    Name = "Default Network ACL"
-  }
+  default     = {}
 }
 
 variable "public_dedicated_network_acl" {
