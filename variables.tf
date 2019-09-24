@@ -1514,7 +1514,7 @@ variable "default_vpc_tags" {
 variable "manage_default_network_acl" {
   description = "Should be true to adopt and manage Default Network ACL"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "default_network_acl_name" {
@@ -1526,7 +1526,9 @@ variable "default_network_acl_name" {
 variable "default_network_acl_tags" {
   description = "Additional tags for the Default Network ACL"
   type        = map(string)
-  default     = { Name = "Default Network ACL"}
+  default     = { 
+    Name = "Default Network ACL"
+  }
 }
 
 variable "public_dedicated_network_acl" {
