@@ -784,7 +784,7 @@ resource "aws_network_acl_rule" "public_outbound" {
 # outbound Network ACLs
 #######################
 resource "aws_network_acl" "outbound" {
-  count = var.create_vpc && var.outbound_dedicated_network_acl && length(var.outbound_subnets) > 0 ? 1 : 0
+  count = var.create_vpc && var.outbound_dedicated_network_acl && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 ) ? 1 : 0
 
   vpc_id     = element(concat(aws_vpc.this.*.id, [""]), 0)
   subnet_ids = aws_subnet.outbound.*.id
@@ -799,7 +799,7 @@ resource "aws_network_acl" "outbound" {
 }
 
 resource "aws_network_acl_rule" "outbound_inbound" {
-  count = var.create_vpc && var.outbound_dedicated_network_acl && length(var.outbound_subnets) > 0 ? length(var.outbound_inbound_acl_rules) : 0
+  count = var.create_vpc && var.outbound_dedicated_network_acl && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 ) ? length(var.outbound_inbound_acl_rules) : 0
 
   network_acl_id = aws_network_acl.outbound[0].id
 
@@ -815,7 +815,7 @@ resource "aws_network_acl_rule" "outbound_inbound" {
 }
 
 resource "aws_network_acl_rule" "outbound_outbound" {
-  count = var.create_vpc && var.outbound_dedicated_network_acl && length(var.outbound_subnets) > 0 ? length(var.outbound_outbound_acl_rules) : 0
+  count = var.create_vpc && var.outbound_dedicated_network_acl && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 )? length(var.outbound_outbound_acl_rules) : 0
 
   network_acl_id = aws_network_acl.outbound[0].id
 

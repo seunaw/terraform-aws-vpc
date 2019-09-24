@@ -1526,7 +1526,7 @@ variable "default_network_acl_name" {
 variable "default_network_acl_tags" {
   description = "Additional tags for the Default Network ACL"
   type        = map(string)
-  default     = {}
+  default     = { Name = "Default Network ACL"}
 }
 
 variable "public_dedicated_network_acl" {
@@ -1544,7 +1544,7 @@ variable "private_dedicated_network_acl" {
 variable "outbound_dedicated_network_acl" {
   description = "Whether to use dedicated network ACL (not default) and custom rules for intra subnets"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "database_dedicated_network_acl" {
