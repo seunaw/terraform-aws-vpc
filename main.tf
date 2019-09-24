@@ -787,13 +787,16 @@ resource "aws_network_acl" "outbound" {
   count = var.create_vpc && var.outbound_dedicated_network_acl && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 ) ? 1 : 0
 
   vpc_id     = element(concat(aws_vpc.this.*.id, [""]), 0)
-  subnet_ids = aws_subnet.outbound.*.id
+  subnet_ids = !var.subnet_with_names ? aws_subnet.outbound.*.id : aws_subnet.outbound_with_names.*.id
 
   tags = merge(
     {
       "Name" = format("%s-${var.outbound_subnet_suffix}", var.name)
     },
     var.tags,
+    {
+      Name = format("%s-%s", var.tags["Name"], var.outbound_subnet_suffix)
+    },
     var.outbound_acl_tags,
   )
 }
