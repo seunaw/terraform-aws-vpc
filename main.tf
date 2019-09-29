@@ -417,6 +417,7 @@ resource "aws_subnet" "outbound_with_names" {
     },
     var.tags,
     var.outbound_subnet_tags,
+    # @TODO - Add legnth to all subnets tags above and make sure name is modified
     length(var.outbound_subnet_tags) > 0 ? { 
       # Replacing region with AZ name
       Name = format(
