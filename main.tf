@@ -1106,7 +1106,7 @@ resource "aws_route" "outbound_nat_gateway" {
   count = var.create_vpc && var.enable_nat_gateway ? local.nat_gateway_count : 0
 
   #route_table_id         = (length(aws_subnet.outbound.*.id) > 0 || length(aws_subnet.outbound_with_names.*.id) > 0) ? element(aws_route_table.outbound.*.id, count.index) : count.index
-  route_table_id         = (length(aws_subnet.outbound.*.id) > 0 || length(aws_subnet.outbound_with_names.*.id) > 0) ? aws_route_table.outbound.id : count.index
+  route_table_id         = (length(aws_subnet.outbound.*.id) > 0 || length(aws_subnet.outbound_with_names.*.id) > 0) ? aws_route_table.outbound[count.index].id : count.index
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = (length(aws_subnet.outbound.*.id) > 0 || length(aws_subnet.outbound_with_names.*.id) > 0) ? element(aws_nat_gateway.this.*.id, count.index) : count.index
 
