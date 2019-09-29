@@ -1126,9 +1126,9 @@ resource "aws_route" "outbound_ipv6_egress" {
 # Route table association
 ##########################
 resource "aws_route_table_association" "outbound" {
-  count = var.create_vpc && length(var.outbound_subnets) > 0 ? length(var.outbound_subnets) : 0
+  count = var.create_vpc && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 )? length(var.outbound_subnets) : 0
 
-  subnet_id = element(aws_subnet.outbound.*.id, count.index)
+  subnet_id = var.subnet_with_names ? element(aws_subnet.outbound_with_names.*.id, count.index) : element(aws_subnet.outbound.*.id, count.index)
   route_table_id = element(
     aws_route_table.outbound.*.id,
     var.single_nat_gateway ? 0 : count.index,
