@@ -113,7 +113,7 @@ resource "aws_egress_only_internet_gateway" "this" {
 # Publiс routes
 ################
 resource "aws_route_table" "public" {
-  count = var.create_vpc && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 )? 1 : 0
+  count = var.create_vpc && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 ) ? 1 : 0
 
   vpc_id = local.vpc_id
 
@@ -158,7 +158,7 @@ resource "aws_route" "public_internet_gateway_ipv6" {
 # There are as many routing tables as the number of NAT gateways
 #################
 resource "aws_route_table" "outbound" {
-  count = var.create_vpc && local.max_subnet_length > 0 ? local.nat_gateway_count : 0
+  count = var.create_vpc && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 ) ? local.nat_gateway_count : 0
 
   vpc_id = local.vpc_id
 
