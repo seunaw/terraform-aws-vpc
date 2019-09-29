@@ -1112,6 +1112,8 @@ resource "aws_route" "outbound_nat_gateway" {
   timeouts {
     create = "5m"
   }
+
+  depends_on = [aws_route_table.outbound]
 }
 
 resource "aws_route" "outbound_ipv6_egress" {
