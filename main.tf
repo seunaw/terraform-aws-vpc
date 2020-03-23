@@ -90,7 +90,7 @@ resource "aws_vpc_dhcp_options_association" "this" {
 # Internet Gateway
 ###################
 resource "aws_internet_gateway" "this" {
-  count = var.create_vpc && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 || length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 ) ? 1 : 0
+  count = var.create_vpc && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 || length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0) ? 1 : 0
 
   vpc_id = local.vpc_id
 
@@ -113,7 +113,7 @@ resource "aws_egress_only_internet_gateway" "this" {
 # Publiс routes
 ################
 resource "aws_route_table" "public" {
-  count = var.create_vpc && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 ) ? 1 : 0
+  count = var.create_vpc && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0) ? 1 : 0
 
   vpc_id = local.vpc_id
 
@@ -158,7 +158,7 @@ resource "aws_route" "public_internet_gateway_ipv6" {
 # There are as many routing tables as the number of NAT gateways
 #################
 resource "aws_route_table" "outbound" {
-  count = var.create_vpc && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 ) ? local.nat_gateway_count : 0
+  count = var.create_vpc && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0) ? local.nat_gateway_count : 0
 
   vpc_id = local.vpc_id
 
@@ -307,11 +307,11 @@ resource "aws_route_table" "private" {
 ################
 resource "aws_subnet" "public" {
   # @TODO - this might not work
-  count = var.create_vpc  && !var.subnet_with_names && length(var.public_subnets) > 0 && (!var.one_nat_gateway_per_az || length(var.public_subnets) >= length(var.azs)) ? length(var.public_subnets) : 0
+  count = var.create_vpc && ! var.subnet_with_names && length(var.public_subnets) > 0 && (! var.one_nat_gateway_per_az || length(var.public_subnets) >= length(var.azs)) ? length(var.public_subnets) : 0
 
-  vpc_id                          = local.vpc_id
-  cidr_block                      = element(concat(var.public_subnets, [""]), count.index)
- 
+  vpc_id     = local.vpc_id
+  cidr_block = element(concat(var.public_subnets, [""]), count.index)
+
   availability_zone               = element(var.azs, count.index)
   map_public_ip_on_launch         = var.map_public_ip_on_launch
   assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.public_subnet_assign_ipv6_address_on_creation
@@ -335,7 +335,7 @@ resource "aws_subnet" "public_with_names" {
   #count = var.create_vpc && var.subnet_with_names && length(var.public_subnets_with_names) > 0 && (!var.one_nat_gateway_per_az || length(var.public_subnets_with_names) >= length(var.azs)) ? length(var.public_subnets_with_names) : 0
   count = var.create_vpc && var.subnet_with_names && length(var.public_subnets_with_names) > 0 ? length(var.public_subnets_with_names) : 0
 
-  vpc_id                          = local.vpc_id
+  vpc_id = local.vpc_id
 
   cidr_block                      = element(var.public_subnets_with_names, count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
@@ -350,20 +350,20 @@ resource "aws_subnet" "public_with_names" {
       #   var.name,
       #   element(var.azs, count.index),
       # )
-      component = element(var.public_subnets_with_names, count.index)["name"] 
-      type      = element(var.public_subnets_with_names, count.index)["type"] 
+      component = element(var.public_subnets_with_names, count.index)["name"]
+      type      = element(var.public_subnets_with_names, count.index)["type"]
     },
     var.tags,
     var.public_subnet_tags,
-    length(var.public_subnet_tags) > 0 ? { { 
+    length(var.public_subnet_tags) > 0 ? {
       # Replacing region with AZ name
       Name = format(
         "%s-%s-%s",
-        replace(var.public_subnet_tags["Name"],local.region,element(var.azs, count.index)),
+        replace(var.public_subnet_tags["Name"], local.region, element(var.azs, count.index)),
         element(var.public_subnets_with_names, count.index)["type"],
         element(var.public_subnets_with_names, count.index)["name"],
-        ),   
-    },
+      ),
+    } : {},
   )
 }
 
@@ -371,7 +371,7 @@ resource "aws_subnet" "public_with_names" {
 # outbound subnet
 #################
 resource "aws_subnet" "outbound" {
-  count = var.create_vpc && !var.subnet_with_names && length(var.outbound_subnets) > 0 ? length(var.outbound_subnets) : 0
+  count = var.create_vpc && ! var.subnet_with_names && length(var.outbound_subnets) > 0 ? length(var.outbound_subnets) : 0
 
   vpc_id                          = local.vpc_id
   cidr_block                      = var.outbound_subnets[count.index]
@@ -397,7 +397,7 @@ resource "aws_subnet" "outbound_with_names" {
   # count = var.create_vpc && var.subnet_with_names && length(var.public_subnets_with_names) > 0 && (!var.one_nat_gateway_per_az || length(var.public_subnets_with_names) >= length(var.azs)) ? length(var.public_subnets_with_names) : 0
   count = var.create_vpc && var.subnet_with_names && length(var.outbound_subnets_with_names) > 0 ? length(var.outbound_subnets_with_names) : 0
 
-  vpc_id                          = local.vpc_id
+  vpc_id = local.vpc_id
 
   cidr_block                      = element(var.outbound_subnets_with_names, count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
@@ -412,21 +412,21 @@ resource "aws_subnet" "outbound_with_names" {
       #   var.name,
       #   element(var.azs, count.index),
       # )
-      component = element(var.outbound_subnets_with_names, count.index)["name"] 
-      type      = element(var.outbound_subnets_with_names, count.index)["type"] 
+      component = element(var.outbound_subnets_with_names, count.index)["name"]
+      type      = element(var.outbound_subnets_with_names, count.index)["type"]
     },
     var.tags,
     var.outbound_subnet_tags,
     # @TODO - Add legnth to all subnets tags above and make sure name is modified
-    length(var.outbound_subnet_tags) > 0 ? { 
+    length(var.outbound_subnet_tags) > 0 ? {
       # Replacing region with AZ name
       Name = format(
         "%s-%s-%s",
-        replace(var.outbound_subnet_tags["Name"],local.region,element(var.azs, count.index)),
+        replace(var.outbound_subnet_tags["Name"], local.region, element(var.azs, count.index)),
         element(var.outbound_subnets_with_names, count.index)["type"],
         element(var.outbound_subnets_with_names, count.index)["name"],
-        ),   
-    }: {},
+      ),
+    } : {},
   )
 }
 
@@ -552,10 +552,10 @@ resource "aws_elasticache_subnet_group" "elasticache" {
 # private subnets - private subnet without NAT gateway
 #####################################################
 resource "aws_subnet" "private" {
-  count = var.create_vpc && !var.subnet_with_names && length(var.private_subnets) > 0 ? length(var.private_subnets) : 0
+  count = var.create_vpc && ! var.subnet_with_names && length(var.private_subnets) > 0 ? length(var.private_subnets) : 0
 
-  vpc_id                          = local.vpc_id
-  cidr_block                      = var.private_subnets[count.index]
+  vpc_id     = local.vpc_id
+  cidr_block = var.private_subnets[count.index]
 
   availability_zone               = element(var.azs, count.index)
   assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
@@ -577,14 +577,14 @@ resource "aws_subnet" "private" {
 
 locals {
   # get region name from current az
-  region = substr(element(var.azs, 0),0,length(element(var.azs, 0))-1)
+  region = substr(element(var.azs, 0), 0, length(element(var.azs, 0)) - 1)
 
 }
 
 resource "aws_subnet" "private_with_names" {
   count = var.create_vpc && var.subnet_with_names && length(var.private_subnets_with_names) > 0 ? length(var.private_subnets_with_names) : 0
 
-  vpc_id                          = local.vpc_id
+  vpc_id = local.vpc_id
 
   cidr_block                      = element(concat(var.private_subnets_with_names, [""]), count.index)["cidr"]
   availability_zone               = element(var.azs, count.index)
@@ -599,19 +599,19 @@ resource "aws_subnet" "private_with_names" {
       #   var.name,
       #   element(var.azs, count.index),
       # )
-      component = element(concat(var.private_subnets_with_names, [""]), count.index)["name"] 
-      type      = element(concat(var.private_subnets_with_names, [""]), count.index)["type"] 
+      component = element(concat(var.private_subnets_with_names, [""]), count.index)["name"]
+      type      = element(concat(var.private_subnets_with_names, [""]), count.index)["type"]
     },
     var.tags,
     var.private_subnet_tags,
-    { 
+    {
       # Replacing region with AZ name
       Name = format(
         "%s-%s-%s",
-        replace(var.private_subnet_tags["Name"],local.region,element(var.azs, count.index)),
+        replace(var.private_subnet_tags["Name"], local.region, element(var.azs, count.index)),
         element(concat(var.private_subnets_with_names, [""]), count.index)["type"],
         element(concat(var.private_subnets_with_names, [""]), count.index)["name"],
-        ),   
+      ),
     },
   )
 }
@@ -621,12 +621,12 @@ resource "aws_subnet" "private_with_names" {
 #####################################################
 resource "aws_subnet" "transit" {
 
-  count = var.create_vpc && !var.subnet_with_names && length(var.transit_subnets) > 0 ? length(var.transit_subnets) : 0
+  count = var.create_vpc && ! var.subnet_with_names && length(var.transit_subnets) > 0 ? length(var.transit_subnets) : 0
 
-  vpc_id                          = local.vpc_id
+  vpc_id = local.vpc_id
 
-  cidr_block                      = element(var.transit_subnets, count.index)
-  availability_zone               = element(var.azs, count.index)
+  cidr_block        = element(var.transit_subnets, count.index)
+  availability_zone = element(var.azs, count.index)
 
   # @TODO - create ipv6 variable, using private for now
   assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
@@ -649,10 +649,10 @@ resource "aws_subnet" "transit" {
 resource "aws_subnet" "transit_with_names" {
   count = var.create_vpc && var.subnet_with_names && length(var.transit_subnets_with_names) > 0 ? length(var.transit_subnets_with_names) : 0
 
-  vpc_id                          = local.vpc_id
+  vpc_id = local.vpc_id
 
-  cidr_block                      = element(concat(var.transit_subnets_with_names, []), count.index)["cidr"]
-  availability_zone               = element(var.azs, count.index)
+  cidr_block        = element(concat(var.transit_subnets_with_names, []), count.index)["cidr"]
+  availability_zone = element(var.azs, count.index)
 
   # @TODO - create ipv6 variable
   assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == null ? var.assign_ipv6_address_on_creation : var.private_subnet_assign_ipv6_address_on_creation
@@ -661,20 +661,20 @@ resource "aws_subnet" "transit_with_names" {
 
   tags = merge(
     {
-      component = element(concat(var.transit_subnets_with_names, []), count.index)["name"] 
-      type      = element(concat(var.transit_subnets_with_names, []), count.index)["type"] 
+      component = element(concat(var.transit_subnets_with_names, []), count.index)["name"]
+      type      = element(concat(var.transit_subnets_with_names, []), count.index)["type"]
     },
     var.tags,
     var.transit_subnet_tags,
-    length(var.transit_subnet_tags) > 0 ? { { 
+    length(var.transit_subnet_tags) > 0 ? {
       # Replacing region with AZ name
       Name = format(
         "%s-%s",
-        replace(var.transit_subnet_tags["Name"],local.region,element(var.azs, count.index)),
+        replace(var.transit_subnet_tags["Name"], local.region, element(var.azs, count.index)),
         element(concat(var.transit_subnets_with_names, [""]), count.index)["type"],
-        ),
-      type = "transit"   
-    },
+      ),
+      type = "transit"
+    } : {},
   )
 }
 
@@ -732,10 +732,10 @@ resource "aws_default_network_acl" "this" {
 # Public Network ACLs
 ########################
 resource "aws_network_acl" "public" {
-  count = var.create_vpc && var.public_dedicated_network_acl && (length(var.public_subnets) > 0  || length(var.public_subnets_with_names) > 0 ) ? 1 : 0
+  count = var.create_vpc && var.public_dedicated_network_acl && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0) ? 1 : 0
 
   vpc_id     = element(concat(aws_vpc.this.*.id, [""]), 0)
-  subnet_ids = !var.subnet_with_names ? aws_subnet.public.*.id : aws_subnet.public_with_names.*.id
+  subnet_ids = ! var.subnet_with_names ? aws_subnet.public.*.id : aws_subnet.public_with_names.*.id
 
   tags = merge(
     {
@@ -751,7 +751,7 @@ resource "aws_network_acl" "public" {
 }
 
 resource "aws_network_acl_rule" "public_inbound" {
-  count = var.create_vpc && var.public_dedicated_network_acl && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 ) ? length(var.public_inbound_acl_rules) : 0
+  count = var.create_vpc && var.public_dedicated_network_acl && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0) ? length(var.public_inbound_acl_rules) : 0
 
   network_acl_id = aws_network_acl.public[0].id
 
@@ -767,7 +767,7 @@ resource "aws_network_acl_rule" "public_inbound" {
 }
 
 resource "aws_network_acl_rule" "public_outbound" {
-  count = var.create_vpc && var.public_dedicated_network_acl && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 ) ? length(var.public_outbound_acl_rules) : 0
+  count = var.create_vpc && var.public_dedicated_network_acl && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0) ? length(var.public_outbound_acl_rules) : 0
 
   network_acl_id = aws_network_acl.public[0].id
 
@@ -786,10 +786,10 @@ resource "aws_network_acl_rule" "public_outbound" {
 # outbound Network ACLs
 #######################
 resource "aws_network_acl" "outbound" {
-  count = var.create_vpc && var.outbound_dedicated_network_acl && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 ) ? 1 : 0
+  count = var.create_vpc && var.outbound_dedicated_network_acl && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0) ? 1 : 0
 
   vpc_id     = element(concat(aws_vpc.this.*.id, [""]), 0)
-  subnet_ids = !var.subnet_with_names ? aws_subnet.outbound.*.id : aws_subnet.outbound_with_names.*.id
+  subnet_ids = ! var.subnet_with_names ? aws_subnet.outbound.*.id : aws_subnet.outbound_with_names.*.id
 
   tags = merge(
     {
@@ -805,7 +805,7 @@ resource "aws_network_acl" "outbound" {
 }
 
 resource "aws_network_acl_rule" "outbound_inbound" {
-  count = var.create_vpc && var.outbound_dedicated_network_acl && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 ) ? length(var.outbound_inbound_acl_rules) : 0
+  count = var.create_vpc && var.outbound_dedicated_network_acl && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0) ? length(var.outbound_inbound_acl_rules) : 0
 
   network_acl_id = aws_network_acl.outbound[0].id
 
@@ -821,7 +821,7 @@ resource "aws_network_acl_rule" "outbound_inbound" {
 }
 
 resource "aws_network_acl_rule" "outbound_outbound" {
-  count = var.create_vpc && var.outbound_dedicated_network_acl && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 )? length(var.outbound_outbound_acl_rules) : 0
+  count = var.create_vpc && var.outbound_dedicated_network_acl && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0) ? length(var.outbound_outbound_acl_rules) : 0
 
   network_acl_id = aws_network_acl.outbound[0].id
 
@@ -840,10 +840,10 @@ resource "aws_network_acl_rule" "outbound_outbound" {
 # private Network ACLs
 ########################
 resource "aws_network_acl" "private" {
-  count = var.create_vpc && var.private_dedicated_network_acl && (length(var.private_subnets) > 0 || length(var.private_subnets_with_names) > 0 ) ? 1 : 0
+  count = var.create_vpc && var.private_dedicated_network_acl && (length(var.private_subnets) > 0 || length(var.private_subnets_with_names) > 0) ? 1 : 0
 
   vpc_id     = element(concat(aws_vpc.this.*.id, [""]), 0)
-  subnet_ids = !var.subnet_with_names ? aws_subnet.private.*.id : aws_subnet.private_with_names.*.id
+  subnet_ids = ! var.subnet_with_names ? aws_subnet.private.*.id : aws_subnet.private_with_names.*.id
 
   tags = merge(
     {
@@ -1077,7 +1077,7 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "this" {
-  count = var.create_vpc && var.enable_nat_gateway  ? local.nat_gateway_count : 0
+  count = var.create_vpc && var.enable_nat_gateway ? local.nat_gateway_count : 0
 
   allocation_id = element(
     local.nat_gateway_ips,
@@ -1085,8 +1085,8 @@ resource "aws_nat_gateway" "this" {
   )
 
   # check both subnet and subnet_with_names
-  subnet_id = !var.subnet_with_names ? element(aws_subnet.outbound.*.id, var.single_nat_gateway ? 0 : count.index)  : element(aws_subnet.outbound_with_names.*.id, var.single_nat_gateway ? 0 : count.index)
- 
+  subnet_id = ! var.subnet_with_names ? element(aws_subnet.outbound.*.id, var.single_nat_gateway ? 0 : count.index) : element(aws_subnet.outbound_with_names.*.id, var.single_nat_gateway ? 0 : count.index)
+
   tags = merge(
     {
       "Name" = format(
@@ -1129,7 +1129,7 @@ resource "aws_route" "outbound_ipv6_egress" {
 # Route table association
 ##########################
 resource "aws_route_table_association" "outbound" {
-  count = var.create_vpc && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 )? length(var.outbound_subnets) : 0
+  count = var.create_vpc && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0) ? length(var.outbound_subnets) : 0
 
   subnet_id = var.subnet_with_names ? element(aws_subnet.outbound_with_names.*.id, count.index) : element(aws_subnet.outbound.*.id, count.index)
   route_table_id = element(
@@ -1262,14 +1262,14 @@ resource "aws_ec2_transit_gateway" "this" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
-  count               = length(var.transit_subnets_with_names) > 0 || length(var.transit_subnets) > 0 ? 1 : 0 
+  count = length(var.transit_subnets_with_names) > 0 || length(var.transit_subnets) > 0 ? 1 : 0
 
-  subnet_ids          = length(var.transit_subnets) > 0 ? aws_subnet.transit.*.id : aws_subnet.transit_with_names.*.id
+  subnet_ids = length(var.transit_subnets) > 0 ? aws_subnet.transit.*.id : aws_subnet.transit_with_names.*.id
 
-  transit_gateway_id  = var.enable_transit_gateway ? aws_ec2_transit_gateway.this[0].id : var.transit_gateway_id
-  vpc_id              = local.vpc_id
+  transit_gateway_id = var.enable_transit_gateway ? aws_ec2_transit_gateway.this[0].id : var.transit_gateway_id
+  vpc_id             = local.vpc_id
 
-    tags = merge(
+  tags = merge(
     {
       "Name" = format("%s", var.name)
     },
