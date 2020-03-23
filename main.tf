@@ -158,7 +158,7 @@ resource "aws_route" "public_internet_gateway_ipv6" {
 # There are as many routing tables as the number of NAT gateways
 #################
 resource "aws_route_table" "outbound" {
-  count = var.create_vpc && (length(var.public_subnets) > 0 || length(var.public_subnets_with_names) > 0 ) ? local.nat_gateway_count : 0
+  count = var.create_vpc && (length(var.outbound_subnets) > 0 || length(var.outbound_subnets_with_names) > 0 ) ? local.nat_gateway_count : 0
 
   vpc_id = local.vpc_id
 
@@ -355,11 +355,11 @@ resource "aws_subnet" "public_with_names" {
     },
     var.tags,
     var.public_subnet_tags,
-    { 
+    length(var.public_subnet_tags) > 0 ? { { 
       # Replacing region with AZ name
       Name = format(
         "%s-%s-%s",
-        replace(var.outbound_subnet_tags["Name"],local.region,element(var.azs, count.index)),
+        replace(var.public_subnet_tags["Name"],local.region,element(var.azs, count.index)),
         element(var.public_subnets_with_names, count.index)["type"],
         element(var.public_subnets_with_names, count.index)["name"],
         ),   
@@ -666,7 +666,7 @@ resource "aws_subnet" "transit_with_names" {
     },
     var.tags,
     var.transit_subnet_tags,
-    { 
+    length(var.transit_subnet_tags) > 0 ? { { 
       # Replacing region with AZ name
       Name = format(
         "%s-%s",
@@ -1268,6 +1268,14 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
 
   transit_gateway_id  = var.enable_transit_gateway ? aws_ec2_transit_gateway.this[0].id : var.transit_gateway_id
   vpc_id              = local.vpc_id
+
+    tags = merge(
+    {
+      "Name" = format("%s", var.name)
+    },
+    var.tags,
+    var.transit_subnet_tags,
+  )
 }
 
 
