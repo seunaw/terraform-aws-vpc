@@ -108,75 +108,75 @@ output "public_subnets_ipv6_cidr_blocks" {
   value       = aws_subnet.public.*.ipv6_cidr_block
 }
 
-output "database_subnets" {
-  description = "List of IDs of database subnets"
-  value       = aws_subnet.database.*.id
-}
+# output "database_subnets" {
+#   description = "List of IDs of database subnets"
+#   value       = aws_subnet.database.*.id
+# }
 
-output "database_subnet_arns" {
-  description = "List of ARNs of database subnets"
-  value       = aws_subnet.database.*.arn
-}
+# output "database_subnet_arns" {
+#   description = "List of ARNs of database subnets"
+#   value       = aws_subnet.database.*.arn
+# }
 
-output "database_subnets_cidr_blocks" {
-  description = "List of cidr_blocks of database subnets"
-  value       = aws_subnet.database.*.cidr_block
-}
+# output "database_subnets_cidr_blocks" {
+#   description = "List of cidr_blocks of database subnets"
+#   value       = aws_subnet.database.*.cidr_block
+# }
 
-output "database_subnets_ipv6_cidr_blocks" {
-  description = "List of IPv6 cidr_blocks of database subnets in an IPv6 enabled VPC"
-  value       = aws_subnet.database.*.ipv6_cidr_block
-}
+# output "database_subnets_ipv6_cidr_blocks" {
+#   description = "List of IPv6 cidr_blocks of database subnets in an IPv6 enabled VPC"
+#   value       = aws_subnet.database.*.ipv6_cidr_block
+# }
 
-output "database_subnet_group" {
-  description = "ID of database subnet group"
-  value       = concat(aws_db_subnet_group.database.*.id, [""])[0]
-}
+# output "database_subnet_group" {
+#   description = "ID of database subnet group"
+#   value       = concat(aws_db_subnet_group.database.*.id, [""])[0]
+# }
 
-output "redshift_subnets" {
-  description = "List of IDs of redshift subnets"
-  value       = aws_subnet.redshift.*.id
-}
+# output "redshift_subnets" {
+#   description = "List of IDs of redshift subnets"
+#   value       = aws_subnet.redshift.*.id
+# }
 
-output "redshift_subnet_arns" {
-  description = "List of ARNs of redshift subnets"
-  value       = aws_subnet.redshift.*.arn
-}
+# output "redshift_subnet_arns" {
+#   description = "List of ARNs of redshift subnets"
+#   value       = aws_subnet.redshift.*.arn
+# }
 
-output "redshift_subnets_cidr_blocks" {
-  description = "List of cidr_blocks of redshift subnets"
-  value       = aws_subnet.redshift.*.cidr_block
-}
+# output "redshift_subnets_cidr_blocks" {
+#   description = "List of cidr_blocks of redshift subnets"
+#   value       = aws_subnet.redshift.*.cidr_block
+# }
 
-output "redshift_subnets_ipv6_cidr_blocks" {
-  description = "List of IPv6 cidr_blocks of redshift subnets in an IPv6 enabled VPC"
-  value       = aws_subnet.redshift.*.ipv6_cidr_block
-}
+# output "redshift_subnets_ipv6_cidr_blocks" {
+#   description = "List of IPv6 cidr_blocks of redshift subnets in an IPv6 enabled VPC"
+#   value       = aws_subnet.redshift.*.ipv6_cidr_block
+# }
 
-output "redshift_subnet_group" {
-  description = "ID of redshift subnet group"
-  value       = concat(aws_redshift_subnet_group.redshift.*.id, [""])[0]
-}
+# output "redshift_subnet_group" {
+#   description = "ID of redshift subnet group"
+#   value       = concat(aws_redshift_subnet_group.redshift.*.id, [""])[0]
+# }
 
-output "elasticache_subnets" {
-  description = "List of IDs of elasticache subnets"
-  value       = aws_subnet.elasticache.*.id
-}
+# output "elasticache_subnets" {
+#   description = "List of IDs of elasticache subnets"
+#   value       = aws_subnet.elasticache.*.id
+# }
 
-output "elasticache_subnet_arns" {
-  description = "List of ARNs of elasticache subnets"
-  value       = aws_subnet.elasticache.*.arn
-}
+# output "elasticache_subnet_arns" {
+#   description = "List of ARNs of elasticache subnets"
+#   value       = aws_subnet.elasticache.*.arn
+# }
 
-output "elasticache_subnets_cidr_blocks" {
-  description = "List of cidr_blocks of elasticache subnets"
-  value       = aws_subnet.elasticache.*.cidr_block
-}
+# output "elasticache_subnets_cidr_blocks" {
+#   description = "List of cidr_blocks of elasticache subnets"
+#   value       = aws_subnet.elasticache.*.cidr_block
+# }
 
-output "elasticache_subnets_ipv6_cidr_blocks" {
-  description = "List of IPv6 cidr_blocks of elasticache subnets in an IPv6 enabled VPC"
-  value       = aws_subnet.elasticache.*.ipv6_cidr_block
-}
+# output "elasticache_subnets_ipv6_cidr_blocks" {
+#   description = "List of IPv6 cidr_blocks of elasticache subnets in an IPv6 enabled VPC"
+#   value       = aws_subnet.elasticache.*.ipv6_cidr_block
+# }
 
 output "outbound_subnets" {
   description = "List of IDs of outbound subnets"
@@ -198,15 +198,15 @@ output "outbound_subnets_ipv6_cidr_blocks" {
   value       = aws_subnet.outbound.*.ipv6_cidr_block
 }
 
-output "elasticache_subnet_group" {
-  description = "ID of elasticache subnet group"
-  value       = concat(aws_elasticache_subnet_group.elasticache.*.id, [""])[0]
-}
+# output "elasticache_subnet_group" {
+#   description = "ID of elasticache subnet group"
+#   value       = concat(aws_elasticache_subnet_group.elasticache.*.id, [""])[0]
+# }
 
-output "elasticache_subnet_group_name" {
-  description = "Name of elasticache subnet group"
-  value       = concat(aws_elasticache_subnet_group.elasticache.*.name, [""])[0]
-}
+# output "elasticache_subnet_group_name" {
+#   description = "Name of elasticache subnet group"
+#   value       = concat(aws_elasticache_subnet_group.elasticache.*.name, [""])[0]
+# }
 
 output "public_route_table_ids" {
   description = "List of IDs of public route tables"
@@ -218,20 +218,20 @@ output "private_route_table_ids" {
   value       = aws_route_table.private.*.id
 }
 
-output "database_route_table_ids" {
-  description = "List of IDs of database route tables"
-  value       = length(aws_route_table.database.*.id) > 0 ? aws_route_table.database.*.id : aws_route_table.private.*.id
-}
+# output "database_route_table_ids" {
+#   description = "List of IDs of database route tables"
+#   value       = length(aws_route_table.database.*.id) > 0 ? aws_route_table.database.*.id : aws_route_table.private.*.id
+# }
 
-output "redshift_route_table_ids" {
-  description = "List of IDs of redshift route tables"
-  value       = length(aws_route_table.redshift.*.id) > 0 ? aws_route_table.redshift.*.id : aws_route_table.private.*.id
-}
+# output "redshift_route_table_ids" {
+#   description = "List of IDs of redshift route tables"
+#   value       = length(aws_route_table.redshift.*.id) > 0 ? aws_route_table.redshift.*.id : aws_route_table.private.*.id
+# }
 
-output "elasticache_route_table_ids" {
-  description = "List of IDs of elasticache route tables"
-  value       = length(aws_route_table.elasticache.*.id) > 0 ? aws_route_table.elasticache.*.id : aws_route_table.private.*.id
-}
+# output "elasticache_route_table_ids" {
+#   description = "List of IDs of elasticache route tables"
+#   value       = length(aws_route_table.elasticache.*.id) > 0 ? aws_route_table.elasticache.*.id : aws_route_table.private.*.id
+# }
 
 output "outbound_route_table_ids" {
   description = "List of IDs of outbound route tables"
@@ -347,20 +347,20 @@ output "outbound_network_acl_id" {
   value       = concat(aws_network_acl.outbound.*.id, [""])[0]
 }
 
-output "database_network_acl_id" {
-  description = "ID of the database network ACL"
-  value       = concat(aws_network_acl.database.*.id, [""])[0]
-}
+# output "database_network_acl_id" {
+#   description = "ID of the database network ACL"
+#   value       = concat(aws_network_acl.database.*.id, [""])[0]
+# }
 
-output "redshift_network_acl_id" {
-  description = "ID of the redshift network ACL"
-  value       = concat(aws_network_acl.redshift.*.id, [""])[0]
-}
+# output "redshift_network_acl_id" {
+#   description = "ID of the redshift network ACL"
+#   value       = concat(aws_network_acl.redshift.*.id, [""])[0]
+# }
 
-output "elasticache_network_acl_id" {
-  description = "ID of the elasticache network ACL"
-  value       = concat(aws_network_acl.elasticache.*.id, [""])[0]
-}
+# output "elasticache_network_acl_id" {
+#   description = "ID of the elasticache network ACL"
+#   value       = concat(aws_network_acl.elasticache.*.id, [""])[0]
+# }
 
 # VPC Endpoints
 output "vpc_endpoint_s3_id" {
@@ -926,3 +926,9 @@ output "name" {
   description = "The name of the VPC specified as argument to this module"
   value       = var.name
 }
+
+output "transit_gateway_id" {
+  description = "The transit gateway_id of the region"
+  value       = var.enable_transit_gateway ? aws_ec2_transit_gateway.this[0].id : ""
+}
+

@@ -163,7 +163,7 @@ variable "public_subnets" {
 variable "public_subnets_with_names" {
   description = "A list of private subnets inside the VPC"
   #type        = list(map(string))
-  default     = []
+  default = []
 }
 
 variable "private_subnets" {
@@ -175,7 +175,7 @@ variable "private_subnets" {
 variable "private_subnets_with_names" {
   description = "A list of private subnets inside the VPC"
   #type        = list()
-  default     = []
+  default = []
 }
 
 variable "transit_subnets" {
@@ -187,7 +187,7 @@ variable "transit_subnets" {
 variable "transit_subnets_with_names" {
   description = "A list of private subnets inside the VPC"
   #type        = list(map(string))
-  default     = []
+  default = []
 }
 
 variable "database_subnets" {
@@ -217,7 +217,7 @@ variable "outbound_subnets" {
 variable "outbound_subnets_with_names" {
   description = "A list of outbound subnets inside the VPC"
   #type        = list(map(string))
-  default     = []
+  default = []
 }
 
 variable "create_database_subnet_route_table" {
@@ -1809,6 +1809,6 @@ variable "subnet_with_names" {
   description = "Indicates that you are passing a subnet with name and cidr"
   type        = bool
 
-  default     = false
+  default = false
 }
 
